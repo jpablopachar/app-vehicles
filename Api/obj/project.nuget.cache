@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Fw5//3d8RWQ=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\jpabl\\Documents\\Aplicaciones\\.NET\\app-vehicles\\Api\\Api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\jpabl\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.14\\microsoft.aspnetcore.openapi.9.0.14.nupkg.sha512",
+    "C:\\Users\\jpabl\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
