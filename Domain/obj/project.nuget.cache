@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "2oHHNihVhNQ=",
+  "dgSpecHash": "/q+yujgftVk=",
   "success": true,
   "projectFilePath": "C:\\Users\\jpabl\\Documents\\Aplicaciones\\.NET\\app-vehicles\\Domain\\Domain.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\jpabl\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512"
+  ],
   "logs": []
 }
