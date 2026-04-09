@@ -10,6 +10,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstractions\" />
+    <Folder Include="Permissions\" />
+    <Folder Include="Roles\" />
+    <Folder Include="Shared\" />
+    <Folder Include="Users\" />
+    <Folder Include="Users\Events\" />
   </ItemGroup>
 
 </Project>
