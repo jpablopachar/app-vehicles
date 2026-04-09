@@ -11,6 +11,8 @@
   <ItemGroup>
     <Folder Include="Abstractions\" />
     <Folder Include="Permissions\" />
+    <Folder Include="Reviews\" />
+    <Folder Include="Reviews\Events\" />
     <Folder Include="Roles\" />
     <Folder Include="Shared\" />
     <Folder Include="Users\" />
