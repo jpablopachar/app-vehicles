@@ -25,6 +25,8 @@
     <Folder Include="Abstractions\Messaging\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Paginations\" />
+    <Folder Include="Users\" />
+    <Folder Include="Users\RegisterUser\" />
   </ItemGroup>
 
   <PropertyGroup>

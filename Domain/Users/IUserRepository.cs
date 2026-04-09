@@ -12,7 +12,7 @@ public interface IUserRepository
     /// <param name="id">El identificador único del usuario.</param>
     /// <param name="cancellationToken">Token de cancelación para la operación asincrónica.</param>
     /// <returns>El usuario encontrado o null si no existe.</returns>
-    Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken = default);
+    Task<User?> GetById(UserId id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Añade un nuevo usuario al repositorio.
@@ -26,7 +26,7 @@ public interface IUserRepository
     /// <param name="email">El correo electrónico del usuario.</param>
     /// <param name="cancellationToken">Token de cancelación para la operación asincrónica.</param>
     /// <returns>El usuario encontrado o null si no existe.</returns>
-    Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default);
+    Task<User?> GetByEmail(Email email, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Verifica si un usuario con el correo electrónico especificado existe.
