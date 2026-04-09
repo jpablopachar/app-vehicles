@@ -26,6 +26,8 @@
     <Folder Include="Exceptions\" />
     <Folder Include="Paginations\" />
     <Folder Include="Users\" />
+    <Folder Include="Users\GetUsersDapperPaginationQuery\" />
+    <Folder Include="Users\GetUsersPagination\" />
     <Folder Include="Users\LoginUser\" />
     <Folder Include="Users\RegisterUser\" />
   </ItemGroup>
