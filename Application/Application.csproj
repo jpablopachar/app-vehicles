@@ -31,6 +31,8 @@
     <Folder Include="Users\GetUsersPagination\" />
     <Folder Include="Users\LoginUser\" />
     <Folder Include="Users\RegisterUser\" />
+    <Folder Include="Vehicles\" />
+    <Folder Include="Vehicles\GetVehiclesByPagination\" />
   </ItemGroup>
 
   <PropertyGroup>
