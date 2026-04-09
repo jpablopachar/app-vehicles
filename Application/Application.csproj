@@ -18,10 +18,12 @@
   <ItemGroup>
     <Folder Include="Abstractions\" />
     <Folder Include="Abstractions\Authentication\" />
+    <Folder Include="Abstractions\Behaviors\" />
     <Folder Include="Abstractions\Clock\" />
     <Folder Include="Abstractions\Data\" />
     <Folder Include="Abstractions\Email\" />
     <Folder Include="Abstractions\Messaging\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
 
   <PropertyGroup>
