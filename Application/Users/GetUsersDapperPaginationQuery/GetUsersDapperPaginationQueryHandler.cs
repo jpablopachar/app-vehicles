@@ -30,7 +30,8 @@ IQueryHandler<GetUsersDapperPaginationQuery, PagedDapperResults<UserPaginationDa
     {
         using var connection = _sqlConnectionFactory.CreateConnection();
 
-        var builder = new StringBuilder("""
+        var builder = new StringBuilder(
+            """
                 SELECT 
                     usr.email, rl.name as role, p.nombre as permiso
                 FROM users usr
@@ -42,7 +43,8 @@ IQueryHandler<GetUsersDapperPaginationQuery, PagedDapperResults<UserPaginationDa
                         ON rl.id=rp.role_id
                     LEFT JOIN permissions p
                         ON p.id=rp.permission_id
-        """);
+            """
+        );
 
         var search = string.Empty;
         var whereStatement = string.Empty;
@@ -74,19 +76,21 @@ IQueryHandler<GetUsersDapperPaginationQuery, PagedDapperResults<UserPaginationDa
 
         builder.AppendLine(" LIMIT @PageSize OFFSET @Offset;");
 
-        builder.AppendLine("""
-                    SELECT 
-                        COUNT(*)
-                    FROM users usr
-                        LEFT JOIN users_roles usrl
-                            ON usr.id=usrl.user_id
-                        LEFT JOIN roles rl
-                            ON rl.id=usrl.role_id
-                        LEFT JOIN roles_permissions rp
-                            ON rl.id=rp.role_id
-                        LEFT JOIN permissions p
-                            ON p.id=rp.permission_id
-            """);
+        builder.AppendLine(
+            """
+                SELECT 
+                    COUNT(*)
+                FROM users usr
+                    LEFT JOIN users_roles usrl
+                        ON usr.id=usrl.user_id
+                    LEFT JOIN roles rl
+                        ON rl.id=usrl.role_id
+                    LEFT JOIN roles_permissions rp
+                        ON rl.id=rp.role_id
+                    LEFT JOIN permissions p
+                        ON p.id=rp.permission_id
+            """
+        );
 
         builder.AppendLine(whereStatement);
         builder.AppendLine(";");
