@@ -15,6 +15,15 @@
     <PackageReference Include="Serilog" Version="3.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+    <Folder Include="Abstractions\Authentication\" />
+    <Folder Include="Abstractions\Clock\" />
+    <Folder Include="Abstractions\Data\" />
+    <Folder Include="Abstractions\Email\" />
+    <Folder Include="Abstractions\Messaging\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
