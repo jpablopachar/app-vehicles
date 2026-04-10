@@ -17,6 +17,10 @@
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.17.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Authentication\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
