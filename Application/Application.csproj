@@ -34,6 +34,8 @@
     <Folder Include="Vehicles\" />
     <Folder Include="Vehicles\GetVehiclesByPagination\" />
     <Folder Include="Vehicles\GetVehiclesKitByPagination\" />
+    <Folder Include="Vehicles\SearchVehicles\" />
+    <Folder Include="Vehicles\VehicleReportPdf\" />
   </ItemGroup>
 
   <PropertyGroup>
