@@ -19,6 +19,12 @@
 
   <ItemGroup>
     <Folder Include="Authentication\" />
+    <Folder Include="Clock\" />
+    <Folder Include="Data\" />
+    <Folder Include="Email\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Outbox\" />
+    <Folder Include="Specifications\" />
   </ItemGroup>
 
   <PropertyGroup>
