@@ -13,117 +13,218 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Serilog;
 
+/// <summary>
+/// Punto de entrada principal de la aplicación API de vehículos.
+/// Configura todos los servicios, middlewares y endpoints necesarios.
+/// </summary>
+
+#region Construcción del Builder
+/// <summary>
+/// Crea el builder de la aplicación web.
+/// </summary>
 var builder = WebApplication.CreateBuilder(args);
+#endregion
 
-Program.ConfigureLogging(builder);
-Program.ConfigureServices(builder);
+#region Configuración de Logging
+/// <summary>
+/// Configura Serilog como proveedor de logging centralizando la configuración desde appsettings.
+/// </summary>
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration)
+);
+#endregion
 
-var app = builder.Build();
-
-await Program.ConfigureApplicationAsync(app);
-Program.MapEndpoints(app);
-
-app.Run();
+#region Configuración de Servicios Básicos
+/// <summary>
+/// Registra los controladores de la aplicación.
+/// </summary>
+builder.Services.AddControllers();
 
 /// <summary>
-/// Expone métodos auxiliares para ordenar la configuración de inicio de la API.
+/// Configura la licencia de QuestPDF como Community.
 /// </summary>
-public partial class Program
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+#endregion
+
+#region Configuración de Autenticación
+/// <summary>
+/// Configura la autenticación con JWT Bearer como esquema por defecto.
+/// </summary>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
+/// <summary>
+/// Registra las opciones de configuración de JWT.
+/// </summary>
+builder.Services.ConfigureOptions<JwtOptionsSetup>();
+
+/// <summary>
+/// Registra las opciones de configuración para el esquema JWT Bearer.
+/// </summary>
+builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
+
+/// <summary>
+/// Registra el proveedor de tokens JWT como servicio transitorio.
+/// </summary>
+builder.Services.AddTransient<IJwtProvider, JwtProvider>();
+#endregion
+
+#region Configuración de Autorización
+/// <summary>
+/// Añade servicios de autorización a la aplicación.
+/// </summary>
+builder.Services.AddAuthorization();
+
+/// <summary>
+/// Registra el manejador de autorización basado en permisos.
+/// </summary>
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+/// <summary>
+/// Registra el proveedor de políticas de autorización basado en permisos.
+/// </summary>
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+#endregion
+
+#region Configuración de Gmail
+/// <summary>
+/// Configura las opciones de Gmail a partir de la sección de configuración.
+/// </summary>
+builder.Services.Configure<GmailSettings>(builder.Configuration.GetSection("GmailSettings"));
+#endregion
+
+#region Configuración de Swagger/API Explorer
+/// <summary>
+/// Añade el generador de puntos finales de API Explorer.
+/// </summary>
+builder.Services.AddEndpointsApiExplorer();
+
+/// <summary>
+/// Registra las opciones personalizadas de configuración de Swagger.
+/// </summary>
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+/// <summary>
+/// Añade el generador de Swagger con opciones personalizadas.
+/// </summary>
+builder.Services.AddSwaggerGen(options =>
+{
+    options.CustomSchemaIds(type => type.ToString());
+});
+#endregion
+
+#region Inyección de Dependencias
+/// <summary>
+/// Registra los servicios de la capa de aplicación.
+/// </summary>
+builder.Services.AddApplication();
+
+/// <summary>
+/// Registra los servicios de la capa de infraestructura.
+/// </summary>
+builder.Services.AddInfrastructure(builder.Configuration);
+#endregion
+
+#region Construcción y Configuración de la Aplicación
+/// <summary>
+/// Construye la aplicación web.
+/// </summary>
+var app = builder.Build();
+
+/// <summary>
+/// Configuración específica para el entorno de desarrollo.
+/// </summary>
+if (app.Environment.IsDevelopment())
 {
     /// <summary>
-    /// Configura el proveedor de logging de la aplicación mediante Serilog.
+    /// Habilita Swagger en desarrollo.
     /// </summary>
-    /// <param name="builder">Constructor principal de la aplicación web.</param>
-    private static void ConfigureLogging(WebApplicationBuilder builder)
-    {
-        builder.Host.UseSerilog((context, configuration) =>
-            configuration.ReadFrom.Configuration(context.Configuration));
-    }
+    app.UseSwagger();
 
     /// <summary>
-    /// Registra los servicios, opciones e integraciones necesarias para la API.
+    /// Configura la interfaz de usuario de Swagger con múltiples versiones de API.
     /// </summary>
-    /// <param name="builder">Constructor principal de la aplicación web.</param>
-    private static void ConfigureServices(WebApplicationBuilder builder)
+    app.UseSwaggerUI(options =>
     {
-        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+        var descriptions = app.DescribeApiVersions();
 
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-
-        builder.Services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
-
-        builder.Services.AddAuthorization();
-        builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
-        builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
-
-        builder.Services.ConfigureOptions<JwtOptionsSetup>();
-        builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
-        builder.Services.Configure<GmailSettings>(builder.Configuration.GetSection("GmailSettings"));
-
-        builder.Services.AddTransient<IJwtProvider, JwtProvider>();
-
-        builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
-        builder.Services.AddSwaggerGen(options =>
+        foreach (var description in descriptions)
         {
-            options.CustomSchemaIds(type => type.ToString());
-        });
-
-        builder.Services.AddApplication();
-        builder.Services.AddInfrastructure(builder.Configuration);
-    }
-
-    /// <summary>
-    /// Configura el pipeline HTTP, aplica migraciones y habilita Swagger en desarrollo.
-    /// </summary>
-    /// <param name="app">Aplicación web ya construida.</param>
-    /// <returns>Una tarea que representa la operación asincrónica de inicialización.</returns>
-    private static async Task ConfigureApplicationAsync(WebApplication app)
-    {
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                var descriptions = app.DescribeApiVersions();
-
-                foreach (var description in descriptions)
-                {
-                    var url = $"/swagger/{description.GroupName}/swagger.json";
-                    var name = description.GroupName.ToUpperInvariant();
-                    options.SwaggerEndpoint(url, name);
-                }
-            });
+            var url = $"/swagger/{description.GroupName}/swagger.json";
+            var name = description.GroupName.ToUpperInvariant();
+            options.SwaggerEndpoint(url, name);
         }
-
-        await app.ApplyMigration();
-
-        app.UseRequestContextLogging();
-        app.UseSerilogRequestLogging();
-        app.UseCustomExceptionHandler();
-        app.UseAuthentication();
-        app.UseAuthorization();
-    }
-
-    /// <summary>
-    /// Registra los controladores y endpoints versionados expuestos por la API.
-    /// </summary>
-    /// <param name="app">Aplicación web configurada.</param>
-    private static void MapEndpoints(WebApplication app)
-    {
-        app.MapControllers();
-
-        ApiVersionSet apiVersion = app.NewApiVersionSet()
-            .HasApiVersion(new ApiVersion(1))
-            .ReportApiVersions()
-            .Build();
-
-        var routeGroupBuilder = app
-            .MapGroup("api/v{version:apiVersion}")
-            .WithApiVersionSet(apiVersion);
-
-        routeGroupBuilder.MapRentalsEndpoints();
-    }
+    });
 }
+#endregion
+
+#region Aplicación de Migraciones
+/// <summary>
+/// Aplica las migraciones pendientes a la base de datos.
+/// </summary>
+await app.ApplyMigration();
+// app.SeedData();
+// app.SeedDataAuthentication();
+#endregion
+
+#region Configuración de Middlewares
+/// <summary>
+/// Registra el middleware para el logging del contexto de solicitudes.
+/// </summary>
+app.UseRequestContextLogging();
+
+/// <summary>
+/// Registra el middleware de logging de solicitudes de Serilog.
+/// </summary>
+app.UseSerilogRequestLogging();
+
+/// <summary>
+/// Registra el middleware personalizado de manejo de excepciones.
+/// </summary>
+app.UseCustomExceptionHandler();
+#endregion
+
+#region Configuración de Autenticación y Autorización
+/// <summary>
+/// Activa el middleware de autenticación.
+/// </summary>
+app.UseAuthentication();
+
+/// <summary>
+/// Activa el middleware de autorización.
+/// </summary>
+app.UseAuthorization();
+#endregion
+
+#region Mapeo de Controladores y Endpoints
+/// <summary>
+/// Mapea todos los controladores registrados.
+/// </summary>
+app.MapControllers();
+
+/// <summary>
+/// Crea el conjunto de versiones de API disponibles.
+/// </summary>
+ApiVersionSet apiVersion = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .ReportApiVersions()
+    .Build();
+
+/// <summary>
+/// Crea el grupo de rutas versionadas para la API.
+/// </summary>
+var routeGroupBuilder = app
+    .MapGroup("api/v{version:apiVersion}")
+    .WithApiVersionSet(apiVersion);
+
+/// <summary>
+/// Mapea los endpoints de arrendamientos.
+/// </summary>
+routeGroupBuilder.MapRentalsEndpoints();
+#endregion
+
+#region Ejecución de la Aplicación
+/// <summary>
+/// Inicia la aplicación web.
+/// </summary>
+app.Run();
+#endregion

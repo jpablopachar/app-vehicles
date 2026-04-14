@@ -101,9 +101,9 @@ public static class SeedDataExtensions
         }
 
         const string sql = """
-            INSERT INTO public.vehiculos
-                (id, vin, modelo, direccion_pais, direccion_departamento, direccion_provincia, direccion_ciudad, direccion_calle, precio_monto, precio_tipo_moneda, mantenimiento_monto, mantenimiento_tipo_moneda, accesorios, fecha_ultima_alquiler)
-                values(@id, @Vin,@Modelo,@Pais, @Departamento, @Provincia, @Ciudad, @Calle, @PrecioMonto, @PrecioTipoMoneda, @PrecioMantenimiento, @PrecioMantenimientoTipoMoneda, @Accesorios, @FechaUltima)
+            INSERT INTO public.vehicles
+                (id, vin, model, address_country, address_department, address_province, address_city, address_street, price_amount, price_currency_type, maintenance_amount, maintenance_currency_type, accessories, last_rental_date)
+                values(@id, @Vin,@Model,@Country, @Department, @Province, @City, @Street, @AmountPrice, @CurrencyTypePrice, @MaintenancePrice, @CurrencyTypeMaintenance, @Accessories, @LastRentalDate)
         """;
 
         connection.Execute(sql, vehicles);

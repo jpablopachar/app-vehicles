@@ -76,8 +76,8 @@ internal sealed class InvokeOutboxMessagesJob(
             FOR UPDATE
         ";
 
-        var resultados = await connection.QueryAsync<OutboxMessageData>(sql, transaction);
-        var records = resultados.ToList();
+        var result = await connection.QueryAsync<OutboxMessageData>(sql, transaction);
+        var records = result.ToList();
 
         foreach (var message in records)
         {

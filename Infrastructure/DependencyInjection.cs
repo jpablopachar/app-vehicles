@@ -63,7 +63,7 @@ public static class DependencyInjection
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
         services.AddTransient<IEmailService, EmailService>();
 
-        var connectionString = configuration.GetConnectionString("ConnectionString")
+        var connectionString = configuration.GetConnectionString("Postgres")
             ?? throw new ArgumentNullException(nameof(configuration));
 
         services.AddDbContext<AppVehiclesDbContext>(options =>
